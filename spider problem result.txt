@@ -1,0 +1,6 @@
+Spider Problem (Monk and The Chamber of Secrets) result:-
+
+Score    	: 20.0
+Time(Sec)	: 3.84356
+Memory(KiB)	: 3137136
+Language	: java
