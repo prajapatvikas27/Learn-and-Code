@@ -157,9 +157,10 @@ public class FileUtil {
 	}
 
 	
-	public <UserField,UserFieldValue> boolean delete(Class className,
-													 UserField userField,
-													 UserFieldValue userFieldValue) {
+	public <UserField,UserFieldValue> boolean delete(
+			Class className,
+			UserField userField,
+			UserFieldValue userFieldValue) {
 		createFile();
 		boolean foundField = findFieldInFile(className, userField,userFieldValue);
 		
@@ -244,9 +245,10 @@ public class FileUtil {
 		return null;
 	}
 
-	private <UserField,UserFieldValue> boolean findFieldInFile(Class className,
-			          										   UserField userField,
-			          										   UserFieldValue userFieldValue)
+	private <UserField,UserFieldValue> boolean findFieldInFile(
+			Class className,
+			UserField userField,
+			UserFieldValue userFieldValue)
 	{
 		
 		String fieldName = userField.toString();
