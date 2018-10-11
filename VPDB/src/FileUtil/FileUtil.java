@@ -57,7 +57,7 @@ public class FileUtil {
 	
 	public void save(Object object) {
 		
-		createFile();		
+		createFileIfNotPresent();		
 		
 		try {
 		
@@ -73,7 +73,7 @@ public class FileUtil {
 	}
 	
 	public boolean delete(Object object) {
-		createFile();
+		createFileIfNotPresent();
 		
 		try {
 			findObjectInFile(object);
@@ -89,7 +89,7 @@ public class FileUtil {
 	
 	public boolean delete(UserField userField) {
 		
-		createFile();	
+		createFileIfNotPresent();	
 		try{
 			
 			findFieldInFile(userField);
@@ -341,7 +341,7 @@ public class FileUtil {
 		
 	}
 	
-	private void createFile() {
+	private void createFileIfNotPresent() {
 		
 		if(!getFile().exists()) {
 			try {
