@@ -1,7 +1,6 @@
 package databaseUtil;
-import java.lang.reflect.Field;
-
 import FileUtil.FileUtil;
+import FileUtil.UserField;
 
 /*
  * This class is used as an ORM layer for storing, retrieving, updating and
@@ -18,8 +17,8 @@ public class VPDB{
 	public void save(Object object) {
 		
 	fileUtil.setFileName(object.getClass().toString());	
-	System.out.println(object.getClass().toString());
-	fileUtil.storeObjectInFile(object);
+	fileUtil.save(object);
+	
 	}
 	
 	
@@ -33,15 +32,21 @@ public class VPDB{
 		return fileUtil.delete(object);
 	}
 	
-	public <UserField, UserFieldValue> boolean delete(Class className,
-													  UserField userField,
-													  UserFieldValue userFieldValue) 
-	{
-		
-		
-		fileUtil.setFileName("class "+className.getName());
+
+
+	/*
+	 * This method is used for deleting an existing object as data in the 
+	 * database.
+	 * @param className the database file from which the data needs to be 
+	 * deleted
+	 * @param userField UserField object based on which the data needs to be 
+	 * deleted
+	 * */
+	public boolean delete( Class className, UserField userField) {
 	
-		return fileUtil.delete(className,userField,userFieldValue);
+		fileUtil.setFileName("class "+className.getName());
+		
+		return fileUtil.delete(userField);
 	}
 	
 }

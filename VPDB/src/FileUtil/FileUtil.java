@@ -7,18 +7,19 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.lang.reflect.Field;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Scanner;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Stream;
 
 import com.google.gson.Gson;
+
+import FileUtilExceptions.FieldNotFoundInFileException;
+import FileUtilExceptions.ObjectNotFoundInFileException;
+import FileUtilExceptions.PatternNotFoundInFileException;
 
 public class FileUtil {
 
@@ -28,6 +29,10 @@ public class FileUtil {
 	FileWriter fileWriter;
 	BufferedWriter bufferedWriter;
 	BufferedReader bufferedReader;
+	
+	public FileUtil() {
+		
+	}
 	
 	public void setFile() {
 		this.file = new File(fileName);
@@ -42,40 +47,71 @@ public class FileUtil {
 		return fileName;
 	}
 
-	public FileUtil() {
 	
-	}
 
 	public void setFileName(String fileName) {
 		this.fileName = fileName;
 		setFile();
 	}
 
-
-	public void storeObjectInFile(Object object) {
+	
+	public void save(Object object) {
 		
-		createFile();			
-		boolean foundObject = findObjectInFile(object);
+		createFile();		
 		
-		if(!foundObject) {
+		try {
+		
+			findObjectInFile(object);
+			
+		}
+		catch(ObjectNotFoundInFileException e) {
+		
 			writeObjectToFile(object);
+		
 		}
 			
 	}
 	
-	private String getObjectInStringFormat(Object object) {
+	public boolean delete(Object object) {
+		createFile();
 		
-		gson = new Gson();
-		String objectInStringFormat = gson.toJson(object);
-		return objectInStringFormat;
+		try {
+			findObjectInFile(object);
+			return removeObjectFromFile(object);
+		}
+		catch(ObjectNotFoundInFileException e) {
+			
+		}
+				
+		return false;
 	}
+	
+	
+	public boolean delete(UserField userField) {
+		
+		createFile();	
+		try{
+			
+			findFieldInFile(userField);
+			return removeObjectFromFile(userField);
+		}
+		catch(FieldNotFoundInFileException e) {
+			
 
+		}
+		
+		return false;
+	}
+	
+	
 	private void writeObjectToFile(Object object) {
 		
 		try {
+
 			fileWriter = new FileWriter(file.getAbsoluteFile(),true);
 			bufferedWriter = new BufferedWriter(fileWriter);
-			bufferedWriter.write(System.lineSeparator() + getObjectInStringFormat(object));
+			bufferedWriter.write(System.lineSeparator() + getObjectJsonInStringFormat(object));
+		
 		} catch (IOException e) {
 			
 			e.printStackTrace();
@@ -99,128 +135,79 @@ public class FileUtil {
 		
 	}
 
-	private void createFile() {
+
+
+	private void findObjectInFile(Object object) throws
+	 ObjectNotFoundInFileException{
 		
-		if(!getFile().exists()) {
-			try {
-				file.createNewFile();								
-			} 
-			catch (IOException e) {
-				
-				e.printStackTrace();
-			}
+		String regex = getObjectJsonInStringFormat(object);
+		Pattern pattern = Pattern.compile(regex,Pattern.LITERAL);
+	
+		try {
 			
+			findPatternInFile(pattern);
+			
+	
+		}
+		catch(PatternNotFoundInFileException e) {
+			throw new ObjectNotFoundInFileException();
 		}
 		
+			
 	}
-
-	private boolean findObjectInFile(Object object) {
-		
-		String regex = new Gson().toJson(object).toString();
-		Pattern pattern = Pattern.compile(regex,Pattern.LITERAL);
-		file = new File(fileName);
-		
-
+	
+	
+	private void findPatternInFile(Pattern pattern) 
+			throws PatternNotFoundInFileException{
+			
 		try {
-			Scanner scanner = new Scanner(file);
+			Scanner scanner = new Scanner(getFile());
 
 			while (scanner.hasNextLine()) {
         
 				 String line = scanner.nextLine();
 				 Matcher matcher = pattern.matcher(line);
-				 while (matcher.find()) {     // find the next match
-			         System.out.println("find() found the pattern \"" + matcher.group()
-			               + "\" starting at index " + matcher.start()
-			               + " and ending at index " + matcher.end());
+				 while (matcher.find()) {     // find the next match			        
 			         scanner.close();
-			         return true;
+			    
+			         return;
 			      }
 			}
 			scanner.close();
 		}
 		catch(FileNotFoundException e) { 
-
+		
 		}
-		return false;
+
+		
+			throw new PatternNotFoundInFileException();
 		
 	}
 
-	public boolean delete(Object object) {
-		createFile();
-		boolean foundObject = findObjectInFile(object);
-		
-		if(foundObject) {
-			return removeObjectFromFile(object);
-		}
-		
-		return false;
-	}
-
-	
-	public <UserField,UserFieldValue> boolean delete(
-			Class className,
-			UserField userField,
-			UserFieldValue userFieldValue) {
-		createFile();
-		boolean foundField = findFieldInFile(className, userField,userFieldValue);
-		
-		if(foundField) {
-			return removeObjectFromFile(className, userField, userFieldValue);
-		}
-		
-		return false;
-	}
-	
-	
-	private <UserField, UserFieldValue> boolean removeObjectFromFile(Class className, 
-					UserField userField, UserFieldValue userFieldValue) 
+	private  boolean removeObjectFromFile(UserField userField) 
 			{
 		
-		
-		
-		
-		System.out.println("removing object");
-		String lineToRemove = getObjectToDelete(className,userField,userFieldValue);
-		System.out.println("Object To delete : " + lineToRemove);
-		List objectList;
-		objectList = getObjectsInObjectList();
-//		StringBuilder fileData = getDataIntoStringBuffer();
-//		Pattern pattern = Pattern.compile(lineToRemove,Pattern.LITERAL);
-//		
-//		 Matcher matcher = pattern.matcher(fileData);
-//		 while (matcher.find()) {     // find the next match
-//			 fileData.delete(matcher.start(),matcher.end()-1);
-//		 }
-//		
-//		
-//		System.out.println(fileData);
-//		writeDataToFile(fileData.toString());
+		String lineToRemove = getObjectToDelete(userField);
+		List objectList = getObjectsInObjectList();
 		Iterator objectListItems = objectList.iterator();
+		
 		while(objectListItems.hasNext()) {
 			String item = (String) objectListItems.next();
 			if(item.trim().equals(lineToRemove)) {
 				objectListItems.remove();
 			}
 		}
+		
 		writeDataToFile(objectList);
-		return true;
-
-			
+		return true;	
 		
 	}
 
-	private <UserField,UserFieldValue> String getObjectToDelete(
-			Class className, UserField userField, UserFieldValue userFieldValue
-			) {
+	private  String getObjectToDelete(UserField userField)
+	{
 		
-		String fieldName = userField.toString();
-		String fieldValue = userFieldValue.toString();
-	    String regex = "\""+ userField + "\"" + ":" + "\"" + userFieldValue + "\"";
-	    System.out.println("Pattern to match : " + regex);
+	    String regex = generateRegexFromField(userField);
 		Pattern pattern = Pattern.compile(regex,Pattern.LITERAL);
-		file = new File(fileName);
-		
-
 		try {
 			Scanner scanner = new Scanner(file);
 
@@ -229,9 +216,7 @@ public class FileUtil {
 				 String line = scanner.nextLine();
 				 Matcher matcher = pattern.matcher(line);
 				 while (matcher.find()) {     // find the next match
-			         System.out.println("find() found the pattern \"" + matcher.group()
-			               + "\" starting at index " + matcher.start()
-			               + " and ending at index " + matcher.end());
+			       
 			         scanner.close();
 			         return line;
 			      }
@@ -245,60 +230,33 @@ public class FileUtil {
 		return null;
 	}
 
-	private <UserField,UserFieldValue> boolean findFieldInFile(
-			Class className,
-			UserField userField,
-			UserFieldValue userFieldValue)
+	private void findFieldInFile(UserField userField)
+	throws FieldNotFoundInFileException
 	{
 		
-		String fieldName = userField.toString();
-		String fieldValue = userFieldValue.toString();
-	    String regex = "\""+ userField + "\"" + ":" + "\"" + userFieldValue + "\"";
-	    System.out.println("Pattern to match : " + regex);
+	
+	    String regex = 	generateRegexFromField(userField);
 		Pattern pattern = Pattern.compile(regex,Pattern.LITERAL);
-		file = new File(fileName);
 		
-
 		try {
-			Scanner scanner = new Scanner(file);
 
-			while (scanner.hasNextLine()) {
-        
-				 String line = scanner.nextLine();
-				 Matcher matcher = pattern.matcher(line);
-				 while (matcher.find()) {     // find the next match
-			         System.out.println("find() found the pattern \"" + matcher.group()
-			               + "\" starting at index " + matcher.start()
-			               + " and ending at index " + matcher.end());
-			         scanner.close();
-			         return true;
-			      }
-			}
-			scanner.close();
+			findPatternInFile(pattern);
 		}
-		catch(FileNotFoundException e) { 
+		catch (PatternNotFoundInFileException e) {
 
+			throw new FieldNotFoundInFileException();
 		}
-		return false;
+		
 
 	}
 
+	
+
 	private boolean removeObjectFromFile(Object object) {
-		System.out.println("removing object");
-		String lineToRemove = getObjectInStringFormat(object);
+		String lineToRemove = getObjectJsonInStringFormat(object);
 		List objectList;
 		objectList = getObjectsInObjectList();
-//		StringBuilder fileData = getDataIntoStringBuffer();
-//		Pattern pattern = Pattern.compile(lineToRemove,Pattern.LITERAL);
-//		
-//		 Matcher matcher = pattern.matcher(fileData);
-//		 while (matcher.find()) {     // find the next match
-//			 fileData.delete(matcher.start(),matcher.end()-1);
-//		 }
-//		
-//		
-//		System.out.println(fileData);
-//		writeDataToFile(fileData.toString());
+
 		Iterator objectListItems = objectList.iterator();
 		while(objectListItems.hasNext()) {
 			String item = (String) objectListItems.next();
@@ -321,8 +279,7 @@ public class FileUtil {
 	        String line = bufferedReader.readLine();
 
 	        while (line != null) {
-//	            sb.append(line);
-//	            sb.append("\n");
+
 	        	objectList.add(line);
 	        	
 	            line = bufferedReader.readLine();
@@ -383,42 +340,35 @@ public class FileUtil {
 		}
 		
 	}
-
-	private StringBuilder getDataIntoStringBuffer() {
+	
+	private void createFile() {
 		
-		
-	    try {
-	    	bufferedReader = new BufferedReader(new FileReader(getFile()));
-	        StringBuilder sb = new StringBuilder();
-	        String line = bufferedReader.readLine();
-
-	        while (line != null) {
-	            sb.append(line);
-	            sb.append("\n");
-	            line = bufferedReader.readLine();
-	        }
-	        return sb;
-	    } catch (IOException e) {
-			e.printStackTrace();
-		}finally {
-	    	
+		if(!getFile().exists()) {
 			try {
-
-				if (bufferedReader != null) {
-					bufferedReader.close();
-				}
-			} catch (IOException ex) {
-
-				ex.printStackTrace();
-
+				file.createNewFile();								
+			} 
+			catch (IOException e) {
+				
+				e.printStackTrace();
 			}
-	    	
-	    }
+			
+		}
 		
-		return null;
+	}
+	
+	private String generateRegexFromField(UserField userField) {
+		
+		String fieldName = userField.getUserFieldName();
+		String fieldValue = userField.getUserFieldValue();
+	    String regex = "\""+ fieldName + "\"" + ":" + "\"" + fieldValue + "\"";
+		return regex;
 	}
 
-	
+	private String getObjectJsonInStringFormat(Object object) {
 		
-
+		gson = new Gson();
+		String objectInStringFormat = gson.toJson(object);
+		return objectInStringFormat;
+	}
+	
 }
