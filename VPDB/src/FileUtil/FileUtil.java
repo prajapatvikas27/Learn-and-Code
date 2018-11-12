@@ -55,7 +55,7 @@ public class FileUtil {
 	}
 
 	
-	public void save(Object object) {
+	public void save(Object object) throws IOException {
 		
 		createFileIfNotPresent();		
 		
@@ -72,7 +72,7 @@ public class FileUtil {
 			
 	}
 	
-	public boolean delete(Object object) {
+	public boolean delete(Object object) throws IOException {
 		createFileIfNotPresent();
 		
 		try {
@@ -87,24 +87,18 @@ public class FileUtil {
 	}
 	
 	
-	public boolean delete(UserField userField) {
+	public boolean delete(UserField userField) throws IOException {
 		
 		createFileIfNotPresent();	
-		try{
+		
 			
 			findFieldInFile(userField);
 			return removeObjectFromFile(userField);
-		}
-		catch(FieldNotFoundInFileException e) {
-			
 
-		}
-		
-		return false;
 	}
 	
 	
-	private void writeObjectToFile(Object object) {
+	private synchronized void writeObjectToFile(Object object) throws IOException {
 		
 		try {
 
@@ -114,7 +108,7 @@ public class FileUtil {
 		
 		} catch (IOException e) {
 			
-			e.printStackTrace();
+			throw e;
 		}finally {
 		
 			try {
@@ -157,7 +151,7 @@ public class FileUtil {
 	}
 	
 	
-	private void findPatternInFile(Pattern pattern) 
+	private synchronized void findPatternInFile(Pattern pattern) 
 			throws PatternNotFoundInFileException{
 			
 		try {
@@ -269,7 +263,7 @@ public class FileUtil {
 		
 	}
 
-	private List getObjectsInObjectList() {
+	private synchronized List getObjectsInObjectList() {
 		
 		List objectList = new ArrayList<String>();
 	
@@ -306,7 +300,7 @@ public class FileUtil {
 		
 	}
 
-	private void writeDataToFile(List objectList) {
+	private synchronized void writeDataToFile(List objectList) {
 				
 		
 		try {
@@ -341,17 +335,11 @@ public class FileUtil {
 		
 	}
 	
-	private void createFileIfNotPresent() {
+	private synchronized void createFileIfNotPresent() throws IOException {
 		
 		if(!getFile().exists()) {
-			try {
-				file.createNewFile();								
-			} 
-			catch (IOException e) {
-				
-				e.printStackTrace();
-			}
 			
+				file.createNewFile();								
 		}
 		
 	}
@@ -369,6 +357,21 @@ public class FileUtil {
 		gson = new Gson();
 		String objectInStringFormat = gson.toJson(object);
 		return objectInStringFormat;
+	}
+
+	public void modify(Object object) throws IOException, ObjectNotFoundInFileException {
+	
+	
+		createFileIfNotPresent();		
+		findObjectInFile(object);
+		updateObjectInFile(object);
+		
+		
+	}
+
+	private void updateObjectInFile(Object object) throws IOException{
+		
+		
 	}
 	
 }
