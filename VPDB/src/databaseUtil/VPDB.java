@@ -57,4 +57,9 @@ public class VPDB{
 		fileUtil.modify(object);
 	}
 	
+	public void find(Object object) {
+		fileUtil.setFileName(object.getClass().toString());	
+		fileUtil.find(object);
+	}
+	
 }

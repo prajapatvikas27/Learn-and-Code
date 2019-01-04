@@ -373,5 +373,10 @@ public class FileUtil {
 		
 		
 	}
+
+	public Object find(Object object) {
+		
+		return object;		
+	}
 	
 }
