@@ -371,12 +371,11 @@ public class FileUtil {
 
 	private void updateObjectInFile(Object object) throws IOException{
 		
-		
 	}
 
-	public Object find(Object object) {
+	public void find(Object object) throws ObjectNotFoundInFileException{
 		
-		return object;		
+		findObjectInFile(object);
 	}
 	
 }

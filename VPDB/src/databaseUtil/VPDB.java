@@ -57,7 +57,7 @@ public class VPDB{
 		fileUtil.modify(object);
 	}
 	
-	public void find(Object object) {
+	public void find(Object object) throws ObjectNotFoundInFileException {
 		fileUtil.setFileName(object.getClass().toString());	
 		fileUtil.find(object);
 	}
