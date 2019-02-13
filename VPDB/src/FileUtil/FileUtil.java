@@ -21,6 +21,9 @@ import FileUtilExceptions.FieldNotFoundInFileException;
 import FileUtilExceptions.ObjectNotFoundInFileException;
 import FileUtilExceptions.PatternNotFoundInFileException;
 
+/*
+ * This class is utility class for doing crud operations on file
+ * @author Vikas Prajapat*/
 public class FileUtil {
 
 	String fileName;
@@ -54,7 +57,9 @@ public class FileUtil {
 		setFile();
 	}
 
-	
+	/*
+	 * This method is used for saving object as data into the database
+	 * @param object Object instance that need to be saved inside the database*/
 	public void save(Object object) throws IOException {
 		
 		createFileIfNotPresent();		
@@ -72,6 +77,11 @@ public class FileUtil {
 			
 	}
 	
+	/*
+	 * This method is used for deleting an existing object as data in the 
+	 * database.
+	 * @param object Object that needs to be deleted from the database.
+	 * */
 	public boolean delete(Object object) throws IOException {
 		createFileIfNotPresent();
 		
@@ -86,7 +96,12 @@ public class FileUtil {
 		return false;
 	}
 	
-	
+	/*
+	 * This method is used for deleting an existing object as data in the 
+	 * database.
+	 * @param userField UserField object based on which the data needs to be 
+	 * deleted
+	 * */
 	public boolean delete(UserField userField) throws IOException {
 		
 		createFileIfNotPresent();	
@@ -97,7 +112,11 @@ public class FileUtil {
 
 	}
 	
-	
+	/*
+	 * This method is used for sereliazing an object as data in the 
+	 * database.
+	 * @param object 
+	 * */
 	private synchronized void writeObjectToFile(Object object) throws IOException {
 		
 		try {
@@ -130,7 +149,11 @@ public class FileUtil {
 	}
 
 
-
+	/*
+	 * This method is used for finding an object as data in the 
+	 * database.
+	 * @param object 
+	 * */
 	private void findObjectInFile(Object object) throws
 	 ObjectNotFoundInFileException{
 		
@@ -140,7 +163,6 @@ public class FileUtil {
 		try {
 			
 			findPatternInFile(pattern);
-			
 	
 		}
 		catch(PatternNotFoundInFileException e) {
@@ -150,7 +172,12 @@ public class FileUtil {
 			
 	}
 	
-	
+	/*
+	 * This method is used for finding an object as data in the 
+	 * database.We are storing object in json format so while finding
+	 * the object in the database we can look for similar pattern.
+	 * @param pattern 
+	 * */
 	private synchronized void findPatternInFile(Pattern pattern) 
 			throws PatternNotFoundInFileException{
 			
@@ -177,7 +204,11 @@ public class FileUtil {
 			throw new PatternNotFoundInFileException();
 		
 	}
-
+	
+	/*
+	 * This method is used for deleting an object from the database
+	 * @param userField 
+	 * */
 	private  boolean removeObjectFromFile(UserField userField) 
 			{
 		
@@ -196,7 +227,11 @@ public class FileUtil {
 		return true;	
 		
 	}
-
+	
+	/*
+	 * This method gets the object which is to be deleted from database.
+	 * @param object 
+	 * */
 	private  String getObjectToDelete(UserField userField)
 	{
 		
@@ -223,6 +258,7 @@ public class FileUtil {
 		
 		return null;
 	}
+	
 
 	private void findFieldInFile(UserField userField)
 	throws FieldNotFoundInFileException
@@ -361,16 +397,14 @@ public class FileUtil {
 
 	public void modify(Object object) throws IOException, ObjectNotFoundInFileException {
 	
-	
 		createFileIfNotPresent();		
 		findObjectInFile(object);
 		updateObjectInFile(object);
-		
-		
+			
 	}
 
 	private void updateObjectInFile(Object object) throws IOException{
-		
+		writeObjectToFile(object);
 	}
 
 	public void find(Object object) throws ObjectNotFoundInFileException{
