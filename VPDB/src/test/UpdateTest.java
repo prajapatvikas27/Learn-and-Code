@@ -10,17 +10,17 @@ public class UpdateTest {
 		
 		
 		DummyEmployee dummyEmployee = new DummyEmployee("dummy","dummyF","dummyM");
-		ITTDB vpdb = new ITTDB();
+		ITTDB ittdb = new ITTDB();
 		
 		try {
-			vpdb.save(dummyEmployee);
+			ittdb.save(dummyEmployee);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		 dummyEmployee = new DummyEmployee("dummy2","dummyF2","dummyM2");
 		try {
-			vpdb.modify(dummyEmployee);
+			ittdb.modify(dummyEmployee);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

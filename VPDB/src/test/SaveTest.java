@@ -10,10 +10,10 @@ public class SaveTest {
 		
 		
 		DummyEmployee dummyEmployee = new DummyEmployee("dummy","dummyF","dummyM");
-		ITTDB vpdb = new ITTDB();
+		ITTDB ittdb = new ITTDB();
 		
 		try {
-			vpdb.save(dummyEmployee);
+			ittdb.save(dummyEmployee);
 			System.out.println("data Saved"+dummyEmployee);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -21,7 +21,7 @@ public class SaveTest {
 		}
 		DummyEmployee dummyEmployee2 = new DummyEmployee("dummy2","dummyF2","dummyM2");
 		try {
-			vpdb.save(dummyEmployee2);
+			ittdb.save(dummyEmployee2);
 			System.out.println("data Saved"+dummyEmployee2);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

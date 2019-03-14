@@ -11,10 +11,10 @@ public static void main(String[] args) {
 		
 		
 		DummyEmployee dummyEmployee = new DummyEmployee("dummy","dummyF","dummyM");
-		ITTDB vpdb = new ITTDB();
+		ITTDB ittdb = new ITTDB();
 		
 		try {
-		vpdb.find(dummyEmployee);
+		ittdb.find(dummyEmployee);
 		}
 		catch (ObjectNotFoundInFileException e) {
 			// TODO: handle exception
