@@ -2,7 +2,7 @@ package test;
 
 import java.io.IOException;
 
-import databaseUtil.VPDB;
+import databaseUtil.ITTDB;
 
 public class UpdateTest {
 
@@ -10,7 +10,7 @@ public class UpdateTest {
 		
 		
 		DummyEmployee dummyEmployee = new DummyEmployee("dummy","dummyF","dummyM");
-		VPDB vpdb = new VPDB();
+		ITTDB vpdb = new ITTDB();
 		
 		try {
 			vpdb.save(dummyEmployee);

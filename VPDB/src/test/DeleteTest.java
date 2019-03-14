@@ -3,14 +3,14 @@ package test;
 import java.io.IOException;
 
 import FileUtil.UserField;
-import databaseUtil.VPDB;
+import databaseUtil.ITTDB;
 
 public class DeleteTest {
 
 	public static void main(String[] args) {
 		
 		DummyEmployee dummyEmployee = new DummyEmployee("dummy","dummyF","dummyM");
-		VPDB vpdb = new VPDB();
+		ITTDB vpdb = new ITTDB();
 		
 		UserField userField = new UserField("name",dummyEmployee.name);
 		try {

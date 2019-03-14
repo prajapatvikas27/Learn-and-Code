@@ -3,7 +3,7 @@ package test;
 import java.io.IOException;
 
 import FileUtilExceptions.ObjectNotFoundInFileException;
-import databaseUtil.VPDB;
+import databaseUtil.ITTDB;
 
 public class FindTest {
 
@@ -11,7 +11,7 @@ public static void main(String[] args) {
 		
 		
 		DummyEmployee dummyEmployee = new DummyEmployee("dummy","dummyF","dummyM");
-		VPDB vpdb = new VPDB();
+		ITTDB vpdb = new ITTDB();
 		
 		try {
 		vpdb.find(dummyEmployee);

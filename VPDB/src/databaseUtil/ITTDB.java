@@ -9,7 +9,7 @@ import FileUtilExceptions.ObjectNotFoundInFileException;
  * This class is used as an ORM layer for storing, retrieving, updating and
  * deleting your data into file system
  * @author Vikas Prajapat*/
-public class VPDB{
+public class ITTDB{
 	
 	FileUtil fileUtil = new FileUtil();
 	

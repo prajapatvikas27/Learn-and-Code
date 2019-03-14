@@ -2,7 +2,7 @@ package test;
 
 import java.io.IOException;
 
-import databaseUtil.VPDB;
+import databaseUtil.ITTDB;
 
 public class SaveTest {
 
@@ -10,10 +10,11 @@ public class SaveTest {
 		
 		
 		DummyEmployee dummyEmployee = new DummyEmployee("dummy","dummyF","dummyM");
-		VPDB vpdb = new VPDB();
+		ITTDB vpdb = new ITTDB();
 		
 		try {
 			vpdb.save(dummyEmployee);
+			System.out.println("data Saved"+dummyEmployee);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -21,6 +22,7 @@ public class SaveTest {
 		DummyEmployee dummyEmployee2 = new DummyEmployee("dummy2","dummyF2","dummyM2");
 		try {
 			vpdb.save(dummyEmployee2);
+			System.out.println("data Saved"+dummyEmployee2);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
